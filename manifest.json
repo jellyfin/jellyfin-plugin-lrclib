@@ -9,11 +9,11 @@
         "versions": [
             {
                 "version": "1.0.1.2",
-                "changelog": "stuff",
+                "changelog": "",
                 "targetAbi": "10.9.0.0",
-                "sourceUrl": "https://github.com/greendoescode/jellyfin-plugin-lrclib/releases/download/v1/lrclib_1.0.0.0.zip",
-                "checksum": "11d5a41d72e7579abed8a5f5266cb314",
-                "timestamp": "2024-08-27T16:02:44Z"
+                "sourceUrl": "https://github.com/greendoescode/jellyfin-plugin-lrclib/releases/download/V1.0.1.2/lrclib_1.0.1.2.zip",
+                "checksum": "b3c8e9846597b23d56b74f46ae949a2a",
+                "timestamp": "2024-08-27T16:08:51Z"
             }
         ]
     }
