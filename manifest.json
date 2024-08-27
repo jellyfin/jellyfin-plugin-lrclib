@@ -11,9 +11,9 @@
                 "version": "1.0.0.0",
                 "changelog": "",
                 "targetAbi": "10.9.0.0",
-                "sourceUrl": "https://github.com/crobibero/jellyfin-plugin-lrclib/releases/download/v1/lrclib_1.0.0.0.zip",
-                "checksum": "95b90f538701a6ead117dc4bdaff5b10",
-                "timestamp": "2024-05-12T00:40:10Z"
+                "sourceUrl": "https://github.com/greendoescode/jellyfin-plugin-lrclib/releases/download/v1/lrclib_1.0.0.0.zip",
+                "checksum": "9a4554a0d01c5f98b113d88f86a8ff3a",
+                "timestamp": "2024-08-27T15:58:25Z"
             }
         ]
     }
