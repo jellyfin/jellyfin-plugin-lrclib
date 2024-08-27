@@ -12,8 +12,8 @@
                 "changelog": "",
                 "targetAbi": "10.9.0.0",
                 "sourceUrl": "https://github.com/greendoescode/jellyfin-plugin-lrclib/releases/download/V1.0.1.2/build-artifact.zip",
-                "checksum": "547f2a78ca32a4eab134c91621022e0f0dd409e1c2bee8cf241a61cc9ffc30da",
-                "timestamp": "2024-08-27T16:08:51Z"
+                "checksum": "547f2a78ca32a4eab134c91621022e0f",
+                "timestamp": "2024-08-27T16:17:51Z"
             }
         ]
     }
