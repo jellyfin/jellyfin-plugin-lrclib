@@ -10,7 +10,7 @@
 <a href="https://github.com/crobibero/jellyfin-plugin-lrclib">
 <img alt="GPLv3 License" src="https://img.shields.io/github/license/crobibero/jellyfin-plugin-lrclib.svg"/>
 </a>
-<a href="https://github.com/jellyfin/jellyfin-plugin-webhook/releases">
+<a href="https://github.com/jellyfin/jellyfin-plugin-lrclib/releases">
 <img alt="Current Release" src="https://img.shields.io/github/release/crobibero/jellyfin-plugin-lrclib.svg"/>
 </a>
 
