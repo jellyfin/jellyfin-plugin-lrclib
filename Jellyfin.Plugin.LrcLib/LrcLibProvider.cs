@@ -133,8 +133,8 @@ public class LrcLibProvider : ILyricProvider
     }
 
     private async Task<IEnumerable<RemoteLyricInfo>> GetExactMatch(
-    LyricSearchRequest request,
-    CancellationToken cancellationToken)
+        LyricSearchRequest request,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.SongName))
         {
@@ -183,7 +183,9 @@ public class LrcLibProvider : ILyricProvider
 
         var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
 
-        var response = await httpClient.GetFromJsonAsync<LrcLibSearchResponse>(requestUri.Uri, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var response = await httpClient
+            .GetFromJsonAsync<LrcLibSearchResponse>(requestUri.Uri, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         if (response is null)
         {
             return Enumerable.Empty<RemoteLyricInfo>();
@@ -246,7 +248,9 @@ public class LrcLibProvider : ILyricProvider
 
         var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
 
-        var response = await httpClient.GetFromJsonAsync<IReadOnlyList<LrcLibSearchResponse>>(requestUri.Uri, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var response = await httpClient
+            .GetFromJsonAsync<IReadOnlyList<LrcLibSearchResponse>>(requestUri.Uri, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         if (response is null)
         {
             return Enumerable.Empty<RemoteLyricInfo>();
