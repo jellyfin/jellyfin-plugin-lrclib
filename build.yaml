@@ -8,7 +8,7 @@ overview: "Download lyrics from https://lrclib.net/"
 description: >
   Download lyrics from https://lrclib.net/
 
-category: "Notifications"
+category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.LrcLib.dll"
 changelog: |2-
