@@ -3,7 +3,7 @@
 namespace Jellyfin.Plugin.LrcLib.Configuration;
 
 /// <summary>
-/// Configuration for tvdb.
+/// Configuration for LrcLib.
 /// </summary>
 public class PluginConfiguration : BasePluginConfiguration
 {
