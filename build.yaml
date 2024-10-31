@@ -1,6 +1,6 @@
 name: "LrcLib Lyrics"
 guid: "D106EBE6-9CA8-4FBC-9CD1-A92A213DA9F9"
-version: 2
+version: 3
 targetAbi: "10.10.0.0"
 framework: "net8.0"
 owner: "jellyfin"
@@ -11,6 +11,6 @@ description: >
 category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.LrcLib.dll"
-changelog: |2-
-  ### Dependency updates ###
-  - Update dependency Microsoft.Extensions.Http to 8.0.1 (#8) @renovate
+changelog: |-
+  - Update plugin name (#12) @thornbill
+  - Update PluginConfiguration comment (#10) @scampower3
