@@ -25,7 +25,7 @@ public class LrcLibPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
     }
 
     /// <inheritdoc />
-    public override string Name => "LrcLib";
+    public override string Name => "LrcLib Lyrics";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("D106EBE6-9CA8-4FBC-9CD1-A92A213DA9F9");
