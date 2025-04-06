@@ -142,8 +142,18 @@ public class LrcLibProvider : ILyricProvider
             return Enumerable.Empty<RemoteLyricInfo>();
         }
 
-        string artist = request.ArtistNames?[0] ?? request.AlbumArtistsNames?[0] ?? string.Empty;
-        if (string.IsNullOrEmpty(artist))
+        string artist;
+        if (request.ArtistNames is not null
+            && request.ArtistNames.Count > 0)
+        {
+            artist = request.ArtistNames[0];
+        }
+        else if (request.AlbumArtistsNames is not null
+            && request.AlbumArtistsNames.Count > 0)
+        {
+            artist = request.AlbumArtistsNames[0];
+        }
+        else
         {
             _logger.LogInformation("Artist name is required");
             return Enumerable.Empty<RemoteLyricInfo>();
@@ -205,8 +215,18 @@ public class LrcLibProvider : ILyricProvider
 
         if (!ExcludeArtistName)
         {
-            string artist = string.Join(", ", request.ArtistNames ?? request.AlbumArtistsNames ?? Enumerable.Empty<string>());
-            if (string.IsNullOrEmpty(artist))
+            string artist;
+            if (request.ArtistNames is not null
+                && request.ArtistNames.Count > 0)
+            {
+                artist = string.Join(", ", request.ArtistNames);
+            }
+            else if (request.AlbumArtistsNames is not null
+                && request.AlbumArtistsNames.Count > 0)
+            {
+                artist = string.Join(", ", request.AlbumArtistsNames);
+            }
+            else
             {
                 _logger.LogInformation("Artist name is required");
                 return Enumerable.Empty<RemoteLyricInfo>();
