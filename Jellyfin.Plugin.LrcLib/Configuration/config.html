@@ -24,6 +24,14 @@
                             <input is="emby-checkbox" type="checkbox" id="excludeAlbumName" />
                             <span>Exclude album name from the search parameters.</span>
                         </label>
+                        <div class="inputContainer" id="baseUrlContainer">
+                            <label class="inputLabel" for="baseUrl">Base URL used for accessing the API.</label>
+                            <input is="emby-input" id="baseUrl" class="emby-input" required="required"></input>
+                            <div class="fieldDescription">
+                                This option allows usage of a custom LrcLib server, set to the value
+                                https://lrclib.net to use the default server.
+                            </div>
+                        </div>
                         <br />
                         <div>
                             <button is="emby-button" type="submit" data-theme="b" class="raised button-submit block">
@@ -51,6 +59,7 @@
 
                     document.querySelector('#excludeArtistName').checked = config.ExcludeArtistName;
                     document.querySelector('#excludeAlbumName').checked = config.ExcludeAlbumName;
+                    document.querySelector('#baseUrl').value = config.BaseUrl || 'https://lrclib.net';
                     Dashboard.hideLoadingMsg();
                 });
             },
@@ -62,6 +71,7 @@
                     config.UseStrictSearch = document.querySelector('#useStrictSearch').checked;
                     config.ExcludeArtistName = document.querySelector('#excludeArtistName').checked;
                     config.ExcludeAlbumName = document.querySelector('#excludeAlbumName').checked;
+                    config.BaseUrl = document.querySelector('#baseUrl').value;
 
                     ApiClient.updatePluginConfiguration(LrcLibPluginConfiguration.uniquePluginId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);

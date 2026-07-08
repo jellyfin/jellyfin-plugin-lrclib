@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Jellyfin.Plugin.LrcLib.Configuration;
 using Jellyfin.Plugin.LrcLib.Models;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Common.Net;
@@ -24,7 +25,6 @@ namespace Jellyfin.Plugin.LrcLib;
 /// </summary>
 public class LrcLibProvider : ILyricProvider
 {
-    private const string BaseUrl = "https://lrclib.net";
     private const string SyncedSuffix = "synced";
     private const string PlainSuffix = "plain";
     private const string SyncedFormat = "lrc";
@@ -43,6 +43,8 @@ public class LrcLibProvider : ILyricProvider
         _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
+
+    private static string BaseUrl => LrcLibPlugin.Instance?.Configuration.BaseUrl ?? PluginConfiguration.DefaultBaseUrl;
 
     private static bool UseStrictSearch => LrcLibPlugin.Instance?.Configuration.UseStrictSearch ?? true;
 
