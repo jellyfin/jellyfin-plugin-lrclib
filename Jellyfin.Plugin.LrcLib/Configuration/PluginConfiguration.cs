@@ -8,6 +8,11 @@ namespace Jellyfin.Plugin.LrcLib.Configuration;
 public class PluginConfiguration : BasePluginConfiguration
 {
     /// <summary>
+    /// The default base URL for accessing the API.
+    /// </summary>
+    public const string DefaultBaseUrl = "https://lrclib.net";
+
+    /// <summary>
     /// Gets or sets a value indicating whether to use strict search.
     /// </summary>
     public bool UseStrictSearch { get; set; } = true;
@@ -21,4 +26,9 @@ public class PluginConfiguration : BasePluginConfiguration
     /// Gets or sets a value indicating whether to exclude album name.
     /// </summary>
     public bool ExcludeAlbumName { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the base URL used for accessing the API.
+    /// </summary>
+    public string BaseUrl { get; set; } = DefaultBaseUrl;
 }
