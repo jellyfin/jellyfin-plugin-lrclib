@@ -28,6 +28,11 @@ public class PluginConfiguration : BasePluginConfiguration
     public bool ExcludeAlbumName { get; set; } = false;
 
     /// <summary>
+    /// Gets or sets a value indicating whether synced lyrics are preferred over plain lyrics.
+    /// </summary>
+    public bool PreferSyncedLyrics { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the base URL used for accessing the API.
     /// </summary>
     public string BaseUrl { get; set; } = DefaultBaseUrl;

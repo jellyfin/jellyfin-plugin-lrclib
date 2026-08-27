@@ -43,6 +43,8 @@ public class LrcLibProvider : ILyricProvider
         _logger = logger;
     }
 
+    private static bool PreferSyncedLyrics => LrcLibPlugin.Instance?.Configuration.PreferSyncedLyrics ?? true;
+
     private static string BaseUrl => LrcLibPlugin.Instance?.Configuration.BaseUrl ?? PluginConfiguration.DefaultBaseUrl;
 
     private static bool UseStrictSearch => LrcLibPlugin.Instance?.Configuration.UseStrictSearch ?? true;
@@ -266,7 +268,10 @@ public class LrcLibProvider : ILyricProvider
             results.AddRange(GetRemoteLyrics(item));
         }
 
-        var sortedResults = results.OrderByDescending(x => x.Metadata.IsSynced);
+        // Order across records the same way GetRemoteLyrics orders within one.
+        var sortedResults = PreferSyncedLyrics
+            ? results.OrderByDescending(x => x.Metadata.IsSynced)
+            : results.OrderBy(x => x.Metadata.IsSynced);
 
         return sortedResults;
     }
@@ -289,54 +294,52 @@ public class LrcLibProvider : ILyricProvider
 
     private List<RemoteLyricInfo> GetRemoteLyrics(LrcLibSearchResponse response)
     {
-        var results = new List<RemoteLyricInfo>();
+        var synced = GetRemoteLyric(response, response.SyncedLyrics, true);
+        var plain = GetRemoteLyric(response, response.PlainLyrics, false);
 
-        if (!string.IsNullOrEmpty(response.SyncedLyrics))
+        // The order matters beyond presentation: Jellyfin's scheduled lyric download saves the
+        // first result, so the preferred format has to be listed first.
+        var first = PreferSyncedLyrics ? synced : plain;
+        var second = PreferSyncedLyrics ? plain : synced;
+
+        var results = new List<RemoteLyricInfo>(2);
+        if (first is not null)
         {
-            var stream = new MemoryStream(Encoding.UTF8.GetBytes(response.SyncedLyrics));
-            results.Add(new RemoteLyricInfo
-            {
-                Id = $"{response.Id}_{SyncedSuffix}",
-                ProviderName = Name,
-                Metadata = new LyricMetadata
-                {
-                    Album = response.AlbumName,
-                    Artist = response.ArtistName,
-                    Title = response.TrackName,
-                    Length = TimeSpan.FromSeconds(response.Duration ?? 0).Ticks,
-                    IsSynced = true
-                },
-                Lyrics = new LyricResponse
-                {
-                    Format = SyncedFormat,
-                    Stream = stream
-                }
-            });
+            results.Add(first);
         }
 
-        if (!string.IsNullOrEmpty(response.PlainLyrics))
+        if (second is not null)
         {
-            var stream = new MemoryStream(Encoding.UTF8.GetBytes(response.PlainLyrics));
-            results.Add(new RemoteLyricInfo
-            {
-                Id = $"{response.Id}_{PlainSuffix}",
-                ProviderName = Name,
-                Metadata = new LyricMetadata
-                {
-                    Album = response.AlbumName,
-                    Artist = response.ArtistName,
-                    Title = response.TrackName,
-                    Length = TimeSpan.FromSeconds(response.Duration ?? 0).Ticks,
-                    IsSynced = false
-                },
-                Lyrics = new LyricResponse
-                {
-                    Format = PlainFormat,
-                    Stream = stream
-                }
-            });
+            results.Add(second);
         }
 
         return results;
+    }
+
+    private RemoteLyricInfo? GetRemoteLyric(LrcLibSearchResponse response, string? lyrics, bool isSynced)
+    {
+        if (string.IsNullOrEmpty(lyrics))
+        {
+            return null;
+        }
+
+        return new RemoteLyricInfo
+        {
+            Id = $"{response.Id}_{(isSynced ? SyncedSuffix : PlainSuffix)}",
+            ProviderName = Name,
+            Metadata = new LyricMetadata
+            {
+                Album = response.AlbumName,
+                Artist = response.ArtistName,
+                Title = response.TrackName,
+                Length = TimeSpan.FromSeconds(response.Duration ?? 0).Ticks,
+                IsSynced = isSynced
+            },
+            Lyrics = new LyricResponse
+            {
+                Format = isSynced ? SyncedFormat : PlainFormat,
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(lyrics))
+            }
+        };
     }
 }

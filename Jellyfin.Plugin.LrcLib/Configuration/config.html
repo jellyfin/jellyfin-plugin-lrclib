@@ -24,6 +24,10 @@
                             <input is="emby-checkbox" type="checkbox" id="excludeAlbumName" />
                             <span>Exclude album name from the search parameters.</span>
                         </label>
+                        <label class="checkboxContainer">
+                            <input is="emby-checkbox" type="checkbox" id="preferSyncedLyrics" />
+                            <span>Prefer synced lyrics over plain lyrics.</span>
+                        </label>
                         <div class="inputContainer" id="baseUrlContainer">
                             <label class="inputLabel" for="baseUrl">Base URL used for accessing the API.</label>
                             <input is="emby-input" id="baseUrl" class="emby-input" required="required"></input>
@@ -67,6 +71,7 @@
 
                     document.querySelector('#excludeArtistName').checked = config.ExcludeArtistName;
                     document.querySelector('#excludeAlbumName').checked = config.ExcludeAlbumName;
+                    document.querySelector('#preferSyncedLyrics').checked = config.PreferSyncedLyrics;
                     document.querySelector('#baseUrl').value = config.BaseUrl || 'https://lrclib.net';
                     document.querySelector('#disableRateLimit').checked = config.DisableRateLimit;
                     Dashboard.hideLoadingMsg();
@@ -80,6 +85,7 @@
                     config.UseStrictSearch = document.querySelector('#useStrictSearch').checked;
                     config.ExcludeArtistName = document.querySelector('#excludeArtistName').checked;
                     config.ExcludeAlbumName = document.querySelector('#excludeAlbumName').checked;
+                    config.PreferSyncedLyrics = document.querySelector('#preferSyncedLyrics').checked;
                     config.BaseUrl = document.querySelector('#baseUrl').value;
                     config.DisableRateLimit = document.querySelector('#disableRateLimit').checked;
 
