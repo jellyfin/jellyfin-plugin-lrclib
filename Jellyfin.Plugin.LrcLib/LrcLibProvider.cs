@@ -150,6 +150,11 @@ public class LrcLibProvider : ILyricProvider
         {
             artist = request.ArtistNames[0];
         }
+        else if (request.AlbumArtistsNames is not null
+            && request.AlbumArtistsNames.Count > 0)
+        {
+            artist = request.AlbumArtistsNames[0];
+        }
         else
         {
             _logger.LogInformation("Artist name is required");
@@ -216,7 +221,12 @@ public class LrcLibProvider : ILyricProvider
             if (request.ArtistNames is not null
                 && request.ArtistNames.Count > 0)
             {
-                artist = request.ArtistNames[0];
+                artist = string.Join(", ", request.ArtistNames);
+            }
+            else if (request.AlbumArtistsNames is not null
+                && request.AlbumArtistsNames.Count > 0)
+            {
+                artist = string.Join(", ", request.AlbumArtistsNames);
             }
             else
             {
