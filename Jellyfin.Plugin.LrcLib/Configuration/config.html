@@ -32,6 +32,14 @@
                                 https://lrclib.net to use the default server.
                             </div>
                         </div>
+                        <label class="checkboxContainer">
+                            <input is="emby-checkbox" type="checkbox" id="disableRateLimit" />
+                            <span>Disable rate limiting.</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Removes the delay between requests to the API. This only takes effect when a
+                            custom LrcLib server is configured above.
+                        </div>
                         <br />
                         <div>
                             <button is="emby-button" type="submit" data-theme="b" class="raised button-submit block">
@@ -60,6 +68,7 @@
                     document.querySelector('#excludeArtistName').checked = config.ExcludeArtistName;
                     document.querySelector('#excludeAlbumName').checked = config.ExcludeAlbumName;
                     document.querySelector('#baseUrl').value = config.BaseUrl || 'https://lrclib.net';
+                    document.querySelector('#disableRateLimit').checked = config.DisableRateLimit;
                     Dashboard.hideLoadingMsg();
                 });
             },
@@ -72,6 +81,7 @@
                     config.ExcludeArtistName = document.querySelector('#excludeArtistName').checked;
                     config.ExcludeAlbumName = document.querySelector('#excludeAlbumName').checked;
                     config.BaseUrl = document.querySelector('#baseUrl').value;
+                    config.DisableRateLimit = document.querySelector('#disableRateLimit').checked;
 
                     ApiClient.updatePluginConfiguration(LrcLibPluginConfiguration.uniquePluginId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
