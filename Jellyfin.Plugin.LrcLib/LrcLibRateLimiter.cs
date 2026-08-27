@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.LrcLib.Configuration;
 using MediaBrowser.Common.Net;
 using Microsoft.Extensions.Logging;
 
@@ -157,8 +156,11 @@ internal static class LrcLibRateLimiter
 
     private static string ResolveVersion()
     {
-        var version = LrcLibPlugin.Instance?.Version ?? typeof(LrcLibRateLimiter).Assembly.GetName().Version;
-        return version?.ToString() ?? "unknown";
+        var version = typeof(LrcLibPlugin).Assembly.GetName().Version;
+
+        return version is null
+            ? "0.0.0.0"
+            : version.ToString();
     }
 
     private static TimeSpan ResolveRetryAfter(RetryConditionHeaderValue? retryAfter)
