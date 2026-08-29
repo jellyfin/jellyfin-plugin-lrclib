@@ -14,6 +14,12 @@ namespace Jellyfin.Plugin.LrcLib;
 public class LrcLibPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
     /// <summary>
+    /// The name of the HTTP client <see cref="PluginServiceRegistrator"/> registers with the
+    /// plugin's user agent, and that every lrclib.net request is sent with.
+    /// </summary>
+    public const string HttpClientName = "LrcLib";
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="LrcLibPlugin"/> class.
     /// </summary>
     /// <param name="applicationPaths">Instance of the <see cref="IApplicationPaths"/>.</param>
