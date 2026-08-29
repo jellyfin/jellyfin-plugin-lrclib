@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Net;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.LrcLib;
@@ -13,19 +12,11 @@ namespace Jellyfin.Plugin.LrcLib;
 /// <summary>
 /// Process-wide request gate for lrclib.net.
 /// </summary>
-/// <remarks>
-/// lrclib.net asks plugins to space their requests out, to let one finish before starting the
-/// next, to honour <c>429</c> and its <c>Retry-After</c> header, and to send a user agent that
-/// identifies the plugin rather than the server it runs on. Routing every request through this
-/// gate is what keeps all four true.
-/// </remarks>
 internal static class LrcLibRateLimiter
 {
     private const int MaxRetryAttempts = 1;
     private const string OfficialHost = "lrclib.net";
     private const string OfficialHostSuffix = "." + OfficialHost;
-    // Identifies the plugin and its version to lrclib.net, in place of the server's own user agent.
-    private static readonly ProductInfoHeaderValue _userAgentProduct = new("jellyfin-plugin-lrclib", ResolveVersion());
 
     private static readonly TimeSpan _minimumInterval = TimeSpan.FromMilliseconds(200);
     private static readonly TimeSpan _minimumDelay = TimeSpan.FromMilliseconds(1);
@@ -48,8 +39,8 @@ internal static class LrcLibRateLimiter
     }
 
     /// <summary>
-    /// Sends a request to lrclib.net once the rate limit allows it, stamping the plugin's user
-    /// agent and retrying once on <see cref="HttpStatusCode.TooManyRequests"/>.
+    /// Sends a request to lrclib.net once the rate limit allows it, retrying once on
+    /// <see cref="HttpStatusCode.TooManyRequests"/>.
     /// </summary>
     /// <param name="httpClientFactory">The factory the sending client is created from.</param>
     /// <param name="requestFactory">
@@ -66,13 +57,12 @@ internal static class LrcLibRateLimiter
         CancellationToken cancellationToken)
     {
         // Created here rather than by the caller so that no request can reach lrclib.net without
-        // passing through ApplyUserAgent below.
-        var httpClient = httpClientFactory.CreateClient(NamedClient.Default);
+        // the plugin's user agent, which lives on this named client.
+        var httpClient = httpClientFactory.CreateClient(LrcLibPlugin.HttpClientName);
 
         if (IsRateLimitDisabled)
         {
             using var unlimitedRequest = requestFactory();
-            ApplyUserAgent(unlimitedRequest);
 
             return await httpClient.SendAsync(unlimitedRequest, cancellationToken).ConfigureAwait(false);
         }
@@ -85,7 +75,6 @@ internal static class LrcLibRateLimiter
                 await WaitForIntervalAsync(cancellationToken).ConfigureAwait(false);
 
                 using var request = requestFactory();
-                ApplyUserAgent(request);
 
                 var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
                 if (response.StatusCode != HttpStatusCode.TooManyRequests)
@@ -137,12 +126,6 @@ internal static class LrcLibRateLimiter
     private static TimeSpan GetRemainingInterval()
         => Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp(), _nextRequestTimestamp);
 
-    private static void ApplyUserAgent(HttpRequestMessage request)
-    {
-        request.Headers.UserAgent.Clear();
-        request.Headers.UserAgent.Add(_userAgentProduct);
-    }
-
     private static bool IsOfficialServer(string? baseUrl)
     {
         if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var uri))
@@ -152,15 +135,6 @@ internal static class LrcLibRateLimiter
 
         return uri.Host.Equals(OfficialHost, StringComparison.OrdinalIgnoreCase)
             || uri.Host.EndsWith(OfficialHostSuffix, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string ResolveVersion()
-    {
-        var version = typeof(LrcLibPlugin).Assembly.GetName().Version;
-
-        return version is null
-            ? "0.0.0.0"
-            : version.ToString();
     }
 
     private static TimeSpan ResolveRetryAfter(RetryConditionHeaderValue? retryAfter)
