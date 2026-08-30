@@ -1,7 +1,7 @@
 name: "LrcLib Lyrics"
 guid: "D106EBE6-9CA8-4FBC-9CD1-A92A213DA9F9"
-version: 3
-targetAbi: "10.11.0.0"
+version: 4
+targetAbi: "12.0.0.0"
 framework: "net9.0"
 owner: "jellyfin"
 overview: "Download lyrics from https://lrclib.net/"
@@ -12,6 +12,6 @@ category: "Music"
 artifacts:
   - "Jellyfin.Plugin.LrcLib.dll"
 changelog: |-
-  - Jellyfin 10.11 support (#25) @crobibero
-  - Update plugin name (#12) @thornbill
-  - Update PluginConfiguration comment (#10) @scampower3
+  - Implement rate limiting (#45) @Shadowghost, @crobibero
+  - Prefer artist then album artist (#23) @scampower3, @Shadowghost
+  - Allow configuration of a custom LrcLib server (#42) @dc9dd6aa, @Shadowghost
