@@ -31,4 +31,9 @@ public class PluginConfiguration : BasePluginConfiguration
     /// Gets or sets the base URL used for accessing the API.
     /// </summary>
     public string BaseUrl { get; set; } = DefaultBaseUrl;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether rate limiting is disabled.
+    /// </summary>
+    public bool DisableRateLimit { get; set; } = false;
 }
