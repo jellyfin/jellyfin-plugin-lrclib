@@ -22,12 +22,14 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
 
         serviceCollection.AddHttpClient(LrcLibPlugin.HttpClientName, client =>
             {
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(
-                    applicationHost.Name.Replace(' ', '-'),
-                    applicationHost.ApplicationVersionString));
+                // Deliberately omit the Jellyfin server product token: LRCLIB's edge has
+                // blocked User-Agents containing "Jellyfin-Server" (see issue #47). The
+                // plugin identity and project URL are enough for client identification.
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(
                     "jellyfin-plugin-lrclib",
                     typeof(LrcLibPlugin).Assembly.GetName().Version?.ToString() ?? "0.0.0.0"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(
+                    "(https://github.com/jellyfin/jellyfin-plugin-lrclib)"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
             })
             // Mirrors the handler Jellyfin configures for its own named clients, which a plugin

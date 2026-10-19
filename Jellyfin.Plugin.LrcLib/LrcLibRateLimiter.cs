@@ -40,7 +40,7 @@ internal static class LrcLibRateLimiter
 
     /// <summary>
     /// Sends a request to lrclib.net once the rate limit allows it, retrying once on
-    /// <see cref="HttpStatusCode.TooManyRequests"/>.
+    /// <see cref="HttpStatusCode.TooManyRequests"/> or <see cref="HttpStatusCode.ServiceUnavailable"/>.
     /// </summary>
     /// <param name="httpClientFactory">The factory the sending client is created from.</param>
     /// <param name="requestFactory">
@@ -77,7 +77,7 @@ internal static class LrcLibRateLimiter
                 using var request = requestFactory();
 
                 var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                if (response.StatusCode != HttpStatusCode.TooManyRequests)
+                if (!IsThrottleResponse(response.StatusCode))
                 {
                     return response;
                 }
@@ -87,11 +87,17 @@ internal static class LrcLibRateLimiter
 
                 if (attempt >= MaxRetryAttempts)
                 {
-                    logger.LogWarning("LrcLib rate limit reached, giving up after {Attempts} attempts", attempt + 1);
+                    logger.LogWarning(
+                        "LrcLib returned {StatusCode}, giving up after {Attempts} attempts",
+                        (int)response.StatusCode,
+                        attempt + 1);
                     return response;
                 }
 
-                logger.LogWarning("LrcLib rate limit reached, retrying in {RetryAfter}", retryAfter);
+                logger.LogWarning(
+                    "LrcLib returned {StatusCode}, retrying in {RetryAfter}",
+                    (int)response.StatusCode,
+                    retryAfter);
                 response.Dispose();
             }
         }
@@ -103,6 +109,9 @@ internal static class LrcLibRateLimiter
             _requestGate.Release();
         }
     }
+
+    private static bool IsThrottleResponse(HttpStatusCode statusCode)
+        => statusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable;
 
     private static async Task WaitForIntervalAsync(CancellationToken cancellationToken)
     {
